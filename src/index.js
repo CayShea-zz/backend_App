@@ -2,16 +2,15 @@
 //      Connect to MONGODB, Configure MONGOOSE and setup SERVER with EXPRESS
 //********************************************************************************* */
  
-require('./models/Users');
-
+require('./models/User');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
-
 const mongoose = require('mongoose');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+const requireAuths  = require('./middlewares/requireAuths');
+
 app.use(bodyParser.json());
 app.use(authRoutes);
 
@@ -33,8 +32,8 @@ mongoose.connection.on('error', (err) => {
 
 
 
-app.get('/', (req, res) => {
-    res.send('An alligator approaches!');
+app.get('/', requireAuths, (req, res) => {
+    res.send(`Your email: ${req.user.email}`);
 });
 
 
