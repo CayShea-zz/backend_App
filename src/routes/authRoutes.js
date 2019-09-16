@@ -33,13 +33,15 @@ router.post('/signup', async (req,res) => {
 router.post('/signin', async (req,res) => {
     const { email, password } = req.body;
 
+    const errMsg = () => res.status(404).send({ error: "Invalid email or password"});
+
     if(!email || !password){
         return res.status(422).send({ error: "Must provide email and password" });
     }
 
     const user = await User.findOne({ email });
     if (!user){
-        return res.status(404).send({ error: "Invalid email or password"});
+        return errMsg();
     }
 
     try {
@@ -50,8 +52,8 @@ router.post('/signin', async (req,res) => {
         res.send({ token });
 
     } catch (err) {
-        return res.status(404).send({ error: "Invalid email or password"});
+        return errMsg();
     }
-})
+});
 
 module.exports = router;
